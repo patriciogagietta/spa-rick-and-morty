@@ -6,8 +6,7 @@ export const consultarApi = async  (page) => {
 
     try{
         const { data } = await axios(URL);
-        const { results } = data;
-        return results;
+        return data;
         
     } catch(error) {
         console.error('Error al consultar la API: ', error);
@@ -32,32 +31,15 @@ export const consultarApiId = async (id) => {
     };
 };
 
-export const consultarApiLocation = async () => {
-    const URL = 'https://rickandmortyapi.com/api/location';
+export const consultarApiLocation = async (page) => {
+    const URL = `https://rickandmortyapi.com/api/location?page=${page}`;
 
     try{
         const { data } = await axios(URL);
-        const { results } = data;
-
-        return results;
-    }catch(error){
-        console.error("Error al consultar sobre las locaciones: ", error);
-        throw error;
-    };
-};
-
-export const consultarApiLocationId = async (id) => {
-    const URL = `https://rickandmortyapi.com/api/location/${id}`;
-
-    if (!id) return;
-
-    try{
-        const { data } = await axios(URL);
-        if (!data) return;
 
         return data;
     }catch(error){
-        console.error("Error al consultar por una locacion en especifico: ", error);
+        console.error("Error al consultar sobre las locaciones: ", error);
         throw error;
     };
 };
