@@ -4,6 +4,7 @@ import { Inicio } from './pages/Inicio';
 import { Ubicacion } from './pages/Ubicaciones';
 import { Favoritos } from './pages/Favoritos';
 import { InicioSesion } from './pages/InicioSesion';
+import { Registro } from './pages/Registro';
 import { DetallesPersonaje } from './pages/DetallesPersonaje';
 import { LocacionesProvider } from './context/LocacionesProvider';
 
@@ -18,6 +19,7 @@ function App() {
             <Route path='/ubicacion' element={<Ubicacion />} />
             <Route path='/favoritos' element={<Favoritos />} />
             <Route path='/iniciosesion' element={<InicioSesion />} />
+            <Route path='/registro' element={<Registro />} />
             <Route path='/:id' element={<DetallesPersonaje />}/>
             <Route path='/favoritos/:id' element={<DetallesPersonaje />} />
           </Routes>
