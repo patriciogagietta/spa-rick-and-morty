@@ -36,7 +36,16 @@ const register = async(req, res) => {
             }
         )
 
-        return res.status(201).json({ ok: true, msg: token})
+        res.cookie('token', token)
+
+        return res.status(201).json({ 
+            ok: true, 
+            msg: 'User registered successfully',
+            user: {
+                username: newUser.username,
+                email: newUser.email
+            }
+        })
     } catch {
         return res.status(500).json({
             ok: false,
@@ -65,15 +74,39 @@ const login = async (req, res) => {
             return res.status(401).json({ ok: false, msg: 'Invalid password'})
         }
 
-        const token = jwt.sign({ email: user.email },
+        const token = jwt.sign({ username: user.username, email: user.email },
             process.env.JWT_SECRET,
             {
                 expiresIn: "1h"
             }
         )
 
-        return res.status(200).json( {ok: true, msg: token})
+        res.cookie('token', token)
 
+        return res.status(201).json({
+            ok: true,
+            msg: 'Login successful',
+            user: {
+                username: user.username,
+                email: user.email
+            }
+        })
+
+    } catch {
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error server',
+        })
+    }
+}
+
+const logout = async (req, res) => {
+    try {
+        res.cookie("token", "", {
+            expires: new Date(0)
+        })
+
+        return res.status(200).json({ ok: true, msg: 'Logout successful' })
     } catch {
         return res.status(500).json({
             ok: false,
@@ -84,5 +117,6 @@ const login = async (req, res) => {
 
 export const UserController = {
     register,
-    login
+    login,
+    logout
 }
