@@ -5,15 +5,18 @@ import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
 const register = async(req, res) => {
+    const { username, email, password } = req.body
+
+    const result = UserSchema.validateUser({ username, email, password })
+    if (!result.success) {
+        return res.status(400).json({
+            ok: false,
+            msg: 'Error in validation to register',
+            error: result.error.issues
+        })
+    }
+
     try {
-        const result = UserSchema.validateUser(req.body)
-
-        if (result.error) {
-            return res.status(400).json({ ok: false, msg: result.error.issues })
-        }
-
-        const { username, email, password } = req.body
-
         const userUsername = await UserModel.findByUsername(username)
         if (userUsername) {
             return res.status(409).json({ ok: false, msg: 'Username already exists' })
@@ -56,15 +59,18 @@ const register = async(req, res) => {
 }
 
 const login = async (req, res) => {
+    const { email, password } = req.body
+
+    const result = UserSchema.validateLogin(req.body)
+    if (!result.success) {
+        return res.status(400).json({
+            ok: false,
+            msg: 'Error in validation to login',
+            error: result.error.issues
+        })
+    }
+
     try {
-        const result = UserSchema.validateLogin(req.body)
-
-        if (result.error) {
-            return res.status(400).json({ ok: false, msg: result.error.issues })
-        }
-
-        const { email, password } = req.body
-
         const user = await UserModel.findByEmail(email)
         if (!user) {
             return res.status(404).json({ ok: false, msg: 'Email not exists'})
@@ -112,7 +118,7 @@ const logout = async (req, res) => {
     } catch {
         return res.status(500).json({
             ok: false,
-            msg: 'Error server',
+            msg: 'Error to logout',
         })
     }
 }
