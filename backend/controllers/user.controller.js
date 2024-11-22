@@ -16,7 +16,7 @@ const register = async(req, res) => {
 
         const userUsername = await UserModel.findByUsername(username)
         if (userUsername) {
-            return res.starus(409).json({ ok: false, msg: 'Username already exists' })
+            return res.status(409).json({ ok: false, msg: 'Username already exists' })
         }
 
         const userEmail = await UserModel.findByEmail(email)
@@ -29,7 +29,7 @@ const register = async(req, res) => {
 
         const newUser = await UserModel.createUser({ username, email, password: hashedPassword })
 
-        const token = jwt.sign({username: newUser.username, email: newUser.email},
+        const token = jwt.sign({ id: newUser.id, username: newUser.username, email: newUser.email},
             process.env.JWT_SECRET,
             {
                 expiresIn: "1h"
@@ -42,6 +42,7 @@ const register = async(req, res) => {
             ok: true, 
             msg: 'User registered successfully',
             user: {
+                id: newUser.id,
                 username: newUser.username,
                 email: newUser.email
             }
@@ -74,7 +75,7 @@ const login = async (req, res) => {
             return res.status(401).json({ ok: false, msg: 'Invalid password'})
         }
 
-        const token = jwt.sign({ username: user.username, email: user.email },
+        const token = jwt.sign({ id: user.id, username: user.username, email: user.email },
             process.env.JWT_SECRET,
             {
                 expiresIn: "1h"
@@ -87,6 +88,7 @@ const login = async (req, res) => {
             ok: true,
             msg: 'Login successful',
             user: {
+                id: user.id,
                 username: user.username,
                 email: user.email
             }
