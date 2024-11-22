@@ -19,7 +19,6 @@ const loginSchema = z.object({
         .email({ message: "Debe ser un correo electrónico valido" }),
     password: z
         .string()
-        .min(8, { message: "La contraseña debe tener al menos 8 caracteres" })
 });
 
 const validateUser = (object) => {
