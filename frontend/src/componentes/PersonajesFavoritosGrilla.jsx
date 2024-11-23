@@ -13,10 +13,7 @@ export const PersonajesFavoritosGrilla = () => {
             <div className="text-center font-bold text-2xl mt-28">No hay personajes agregados a favoritos</div>
         ) : (
             <>
-                <div>
-                    <h3 className="text-3xl font-bold mt-14">Personajes favoritos</h3>
-                </div>
-                <div className='grid grid-cols-6 gap-4 mt-6'>
+                <div className='grid grid-cols-6 gap-4 mt-16'>
                     {personajesFavoritos.map((p) => (
                         <article className='flex flex-col gap-3' key={p.id}>
                             <Link to={`/favoritos/${p.id}`}>

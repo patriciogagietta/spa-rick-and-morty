@@ -17,7 +17,6 @@ export const Header = () => {
 
       <ul className='flex gap-10'>
         <Link to='/' onClick={handlePaginaInicio}> <p className='font-bold hover:scale-105'>Inicio</p></Link>
-        <Link to='/ubicacion'><p className='font-bold hover:scale-105'>Ubicacion</p></Link>
         <Link to='/favoritos'><p className='font-bold hover:scale-105'>Favoritos</p></Link>
         <Link to='/iniciosesion'><p className='font-bold hover:scale-105'>Inicio Sesion</p> </Link>
       </ul>

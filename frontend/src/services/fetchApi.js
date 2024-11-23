@@ -30,16 +30,3 @@ export const consultarApiId = async (id) => {
         throw error;
     };
 };
-
-export const consultarApiLocation = async (page) => {
-    const URL = `https://rickandmortyapi.com/api/location?page=${page}`;
-
-    try{
-        const { data } = await axios(URL);
-
-        return data;
-    }catch(error){
-        console.error("Error al consultar sobre las locaciones: ", error);
-        throw error;
-    };
-};
