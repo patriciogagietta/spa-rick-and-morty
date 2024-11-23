@@ -11,20 +11,19 @@ const register = async(req, res) => {
     if (!result.success) {
         return res.status(400).json({
             ok: false,
-            msg: 'Error in validation to register',
-            error: result.error.issues
+            msg: result.error.issues
         })
     }
 
     try {
-        const userUsername = await UserModel.findByUsername(username)
-        if (userUsername) {
-            return res.status(409).json({ ok: false, msg: 'Username already exists' })
-        }
-
         const userEmail = await UserModel.findByEmail(email)
         if (userEmail) {
-            return res.status(409).json({ ok: false, msg: 'Email already exists'})
+            return res.status(409).json({ ok: false, msg: 'El email ya existe' })
+        }
+
+        const userUsername = await UserModel.findByUsername(username)
+        if (userUsername) {
+            return res.status(409).json({ ok: false, msg: 'El usuario ya existe' })
         }
 
         const salt = await bcryptjs.genSalt(10)
@@ -43,7 +42,7 @@ const register = async(req, res) => {
 
         return res.status(201).json({ 
             ok: true, 
-            msg: 'User registered successfully',
+            msg: 'Usuario registrado correctamente',
             user: {
                 id: newUser.id,
                 username: newUser.username,
@@ -65,20 +64,19 @@ const login = async (req, res) => {
     if (!result.success) {
         return res.status(400).json({
             ok: false,
-            msg: 'Error in validation to login',
-            error: result.error.issues
+            msg: result.error.issues
         })
     }
 
     try {
         const user = await UserModel.findByEmail(email)
         if (!user) {
-            return res.status(404).json({ ok: false, msg: 'Email not exists'})
+            return res.status(409).json({ ok: false, msg: 'El email no existe'})
         }
 
         const isMatch = await bcryptjs.compare(password, user.password)
         if (!isMatch) {
-            return res.status(401).json({ ok: false, msg: 'Invalid password'})
+            return res.status(409).json({ ok: false, msg: 'Contraseña incorrecta'})
         }
 
         const token = jwt.sign({ id: user.id, username: user.username, email: user.email },
@@ -92,7 +90,7 @@ const login = async (req, res) => {
 
         return res.status(201).json({
             ok: true,
-            msg: 'Login successful',
+            msg: 'Inicio de sesion correcto',
             user: {
                 id: user.id,
                 username: user.username,
@@ -114,11 +112,11 @@ const logout = async (req, res) => {
             expires: new Date(0)
         })
 
-        return res.status(200).json({ ok: true, msg: 'Logout successful' })
+        return res.status(200).json({ ok: true, msg: 'Sesion cerrada correctamente' })
     } catch {
         return res.status(500).json({
             ok: false,
-            msg: 'Error to logout',
+            msg: 'Error para cerrar sesion',
         })
     }
 }
