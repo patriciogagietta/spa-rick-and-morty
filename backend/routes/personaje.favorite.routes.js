@@ -5,7 +5,7 @@ import { PersonajesFavoritesController } from "../controllers/personaje.favorite
 const router = Router()
 
 router.get("/favorite", verifyToken, PersonajesFavoritesController.getPersonajesFavorites) //obtener favoritos
-router.get("/favorite/:id", verifyToken, PersonajesFavoritesController.getPersonajeFavorite) //obtener un favorito por id
+router.get("/favorite/:personaje_id", verifyToken, PersonajesFavoritesController.getPersonajeFavorite) //obtener un favorito por id
 router.post("/favorite", verifyToken, PersonajesFavoritesController.addPersonajeFavorite) // añadir favoritos
 router.delete("/favorite/:personaje_id", verifyToken, PersonajesFavoritesController.deletePersonajeFavorite) // eliminar un favorito por id
 
