@@ -1,9 +1,27 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+
+import { useUser } from '../hooks/useUser'
+import { useEffect } from 'react'
 
 export const FormInicioSesion = () => {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const { loginUser, errors: loginErrors, isAutenticado } = useUser()
+    const navigate = useNavigate()
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+
+        const email = e.target.email.value
+        const password = e.target.password.value
+        const user = {email, password}
+
+        loginUser(user)
+    }
+
+    useEffect(() => {
+        if (isAutenticado) {
+            navigate('/')
+        }
+    }, [isAutenticado, navigate])
 
     return (
         <div className="mt-24">
@@ -13,7 +31,7 @@ export const FormInicioSesion = () => {
                     ¿Es tu primera vez? <Link to="/registro" className="text-blue-500 font-bold">Registrate</Link>
                 </p>
             </div>
-            <form className="mx-48">
+            <form className="mx-48" onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label className="block mb-1">Email *</label>
                     <input
@@ -21,8 +39,7 @@ export const FormInicioSesion = () => {
                         placeholder="Email"
                         required
                         className="w-full p-2 border border-gray-300 rounded"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        name="email"
                     />
                 </div>
                 <div className="mb-4">
@@ -32,10 +49,10 @@ export const FormInicioSesion = () => {
                         placeholder="Contraseña"
                         required
                         className="w-full p-2 border border-gray-300 rounded"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        name="password"
                         />
                 </div>
+                {loginErrors && (<p className='text-red-500 font-bold'>{loginErrors}</p>)}
                 <button
                     type="submit"
                     className="w-full p-2 mt-6 bg-black text-white rounded"
