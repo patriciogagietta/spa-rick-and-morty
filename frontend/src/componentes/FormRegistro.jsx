@@ -64,7 +64,7 @@ export const FormRegistro = () => {
                         name="password"
                     />
                 </div>
-                {errors && (<p className="text-red-500">{errors}</p>)}
+                {errors && (<p className="text-red-500 font-bold">{errors}</p>)}
                 <button
                     type="submit"
                     className="w-full p-2 mt-6 bg-black text-white rounded"
