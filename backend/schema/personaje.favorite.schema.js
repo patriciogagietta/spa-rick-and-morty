@@ -7,7 +7,9 @@ const addPersonajeFavoriteSchema = z.object({
         .int({ message: "El id del personaje debe ser un número entero" }),
     personaje_name: z
         .string({ required_error: "El nombre del personaje es requerido" })
-        .min(1, { message: "El nombre del personaje no puede estar vacío" })
+        .min(1, { message: "El nombre del personaje no puede estar vacío" }),
+    image: z
+        .string({ required_error: "La imagen del personaje es requerida" })
 })
 
 // schema para la validacion de obtener un personaje favorito
