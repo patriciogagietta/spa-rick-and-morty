@@ -7,5 +7,6 @@ const router = Router();
 router.post('/register', UserController.register)
 router.post('/login', UserController.login)
 router.post('/logout', verifyToken, UserController.logout)
+router.get('/verify', UserController.verify)
 
 export default router;
