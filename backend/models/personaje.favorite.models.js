@@ -1,13 +1,13 @@
 import { db } from "../database/connection.database.js"
 
-const addPersonajeFavorite = async ({ personaje_id, personaje_name, user_id }) => {
+const addPersonajeFavorite = async ({ personaje_id, personaje_name, user_id, image }) => {
     const query = {
         text: `
-            INSERT INTO personaje_favorite (personaje_id, personaje_name, user_id)
-            VALUES ($1, $2, $3)
-            RETURNING id, personaje_id, personaje_name, user_id
+            INSERT INTO personaje_favorite (id, name, user_id, image)
+            VALUES ($1, $2, $3, $4)
+            RETURNING id, name, user_id, image
         `,
-        values: [personaje_id, personaje_name, user_id]
+        values: [personaje_id, personaje_name, user_id, image]
     }
 
     try {
@@ -40,14 +40,14 @@ const getPersonajesFavorites = async ({ user_id }) => {
     }
 }
 
-const getPersonajeFavorite = async ({ id, user_id }) => {
+const getPersonajeFavorite = async ({ personaje_id, user_id }) => {
     const query = {
         text: `
             SELECT *
             FROM personaje_favorite
             WHERE id = $1 AND user_id = $2
         `,
-        values: [id, user_id]
+        values: [personaje_id, user_id]
     }
 
     try {
@@ -64,8 +64,8 @@ const deletePersonajeFavorite = async ({ personaje_id, user_id }) => {
     const query = {
         text: `
             DELETE FROM personaje_favorite
-            WHERE personaje_id = $1 AND user_id = $2
-            RETURNING id, personaje_id, personaje_name, user_id
+            WHERE id = $1 AND user_id = $2
+            RETURNING id, name, user_id, image
         `,
         values: [personaje_id, user_id]
     }
