@@ -121,8 +121,48 @@ const logout = async (req, res) => {
     }
 }
 
+// controller para verificar cada vez que se renderiza la pagina si hay un token almacenado en las cookies
+const verify = async (req, res) => {
+    const { token } = req.cookies
+
+    if (!token) {
+        res.status(400).json({
+            ok: false,
+            msg: 'No esta autorizado'
+        })
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, async (err, user) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'No esta autorizado'
+            })
+        }
+
+        const userEncontrado = await UserModel.findByEmail(user.email)
+        if (!user) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'No esta autorizado'
+            })
+        }
+
+        return res.status(200).json({
+            ok: true,
+            msg: 'Usuario encontrado',
+            user: {
+                id: userEncontrado.id,
+                username: userEncontrado.username,
+                email: userEncontrado.email
+            }
+        })
+    })
+}
+
 export const UserController = {
     register,
     login,
-    logout
+    logout,
+    verify
 }
