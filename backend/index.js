@@ -8,7 +8,10 @@ import favoritesRouter from './routes/personaje.favorite.routes.js'
 
 const app = express();
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}))
 // middleware para capturar la request y detectar si tiene que hacer esa transformacion para acceder al req.body en el post
 app.use(express.json());
 // middleware para leer las cookies
