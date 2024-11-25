@@ -9,6 +9,7 @@ import { InicioSesion } from './pages/InicioSesion';
 import { Registro } from './pages/Registro';
 import { DetallesPersonaje } from './pages/DetallesPersonaje';
 import { UserProvider } from './context/UserProvider';
+import { Error404 } from './pages/Error404'
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
             <Route path='/registro' element={<Registro />} />
             <Route path='/:id' element={<DetallesPersonaje />}/>
             <Route path='/favoritos/:id' element={<DetallesPersonaje />} />
+            <Route path='*' element={<Error404 />} />
           </Routes>
         </div>
         <ToastContainer />
