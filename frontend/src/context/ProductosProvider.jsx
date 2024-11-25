@@ -1,5 +1,10 @@
 import { createContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'
+import { toast, Zoom } from 'react-toastify';
+
 import { consultarApi } from '../services/fetchApi';
+import { useUser } from '../hooks/useUser'
+import { consultarPersonajesFavoritos, consultarDeletePersonajeFavorito, consultarAddPersonajeFavorito } from '../services/fetchApiPersonajes';
 
 export const ProductosContext = createContext();
 
@@ -9,6 +14,8 @@ export const ProductosProvider = ({ children }) => {
     const [personajesFavoritos, setPersonajesFavoritos] = useState([]);
     const [page, setPage] = useState(1);
     const [pageFinalPersonajes, setPageFinalPersonajes] = useState(1);
+    const { isAutenticado } = useUser()
+    const navigate = useNavigate()
 
     useEffect(() => {
         const obtenerPersonajes = async () => {
@@ -25,6 +32,22 @@ export const ProductosProvider = ({ children }) => {
         obtenerPersonajes();
     }, [page]);
 
+    useEffect(() => {
+        const obtenerPersonajesFavoritos = async () => {
+            if (isAutenticado) {
+                try {
+                    const favoritos = await consultarPersonajesFavoritos()
+                    setPersonajesFavoritos(favoritos.personaje_favorite)
+                } catch (error) {
+                    console.error('Error al obtener los personajes favoritos: ', error);
+                    throw error;
+                }
+            }
+        }
+
+        obtenerPersonajesFavoritos()
+    }, [isAutenticado])
+
     const handlePaginaSiguiente = () => {
         setPage(page + 1);
     };
@@ -39,17 +62,39 @@ export const ProductosProvider = ({ children }) => {
         setPage(1);
     };
 
-    const handleAgregarFavorito = (id) => {
+    const handleAgregarFavorito = async (id) => {
+        if (!isAutenticado) {
+            navigate('/iniciosesion')
+            toast.error('Debes iniciar sesion', {
+                position: "bottom-left",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Zoom
+            });
+            return
+        }
+
         const personajeFavorito = producto.find((p) => p.id === id);
-
         const pIsFavorito = personajeIsFavorito(id);
+        const personajeBackend = { personaje_id: personajeFavorito.id, personaje_name: personajeFavorito.name, image: personajeFavorito.image }
 
-        if (pIsFavorito) {
-            const personajesEliminarFavorito = personajesFavoritos.filter((p) => p.id !== id);
-            setPersonajesFavoritos(personajesEliminarFavorito);
-        } else if (personajeFavorito){
-            setPersonajesFavoritos([...personajesFavoritos, personajeFavorito]);
-        };
+        try {
+            if (pIsFavorito) {
+                await consultarDeletePersonajeFavorito(id)
+                const personajesEliminarFavorito = personajesFavoritos.filter((p) => p.id !== id);
+                setPersonajesFavoritos(personajesEliminarFavorito);
+            } else if (personajeFavorito) {
+                await consultarAddPersonajeFavorito(personajeBackend)
+                setPersonajesFavoritos([...personajesFavoritos, personajeFavorito]);
+            };
+        } catch (error) {
+            console.error('Error al agregar/eliminar un personaje favorito: ', error);
+            throw error;
+        }
     };
 
     const personajeIsFavorito = (id) => {
@@ -69,6 +114,7 @@ export const ProductosProvider = ({ children }) => {
             personajesFavoritos,
             personajeIsFavorito,
             pageFinalPersonajes,
+            setPersonajesFavoritos
             }}
         >
             {children};
