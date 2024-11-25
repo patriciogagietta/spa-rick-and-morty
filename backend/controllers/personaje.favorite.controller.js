@@ -3,10 +3,10 @@ import { PersonajeFavoriteSchema } from "../schema/personaje.favorite.schema.js"
 
 // añadir un personaje favorito
 const addPersonajeFavorite = async (req, res) => {
-    const { personaje_id, personaje_name } = req.body
+    const { personaje_id, personaje_name, image } = req.body
     const user_id = req.user.id
 
-    const result = PersonajeFavoriteSchema.validateAddPersonajeFavorite({ personaje_id, personaje_name})
+    const result = PersonajeFavoriteSchema.validateAddPersonajeFavorite({ personaje_id, personaje_name, image })
     if (!result.success) {
         return res.status(400).json({ 
             ok: false, 
@@ -16,7 +16,7 @@ const addPersonajeFavorite = async (req, res) => {
     }
 
     try {
-        const newPersonajeFavorite = await PersonajeFavoriteModel.addPersonajeFavorite({ personaje_id, personaje_name, user_id} )
+        const newPersonajeFavorite = await PersonajeFavoriteModel.addPersonajeFavorite({ personaje_id, personaje_name, user_id, image} )
         return res.status(201).json({
             ok: true,
             msg: 'Favorite add successfully',
@@ -53,10 +53,10 @@ const getPersonajesFavorites = async (req, res) => {
 
 // obtener un personaje favorito
 const getPersonajeFavorite = async (req, res) => {
-    const id = parseInt(req.params.id, 10)
+    const personaje_id = parseInt(req.params.personaje_id, 10)
     const user_id = req.user.id
 
-    const result = PersonajeFavoriteSchema.validateGetPersonajeFavorite({ id })
+    const result = PersonajeFavoriteSchema.validateGetPersonajeFavorite({ personaje_id })
     if (!result.success) {
         return res.status(400).json({ 
             ok: false,
@@ -66,7 +66,7 @@ const getPersonajeFavorite = async (req, res) => {
     }
 
     try {
-        const personajeFavoriteById = await PersonajeFavoriteModel.getPersonajeFavorite({ id, user_id })
+        const personajeFavoriteById = await PersonajeFavoriteModel.getPersonajeFavorite({ personaje_id, user_id })
 
         if (!personajeFavoriteById) {
             return res.status(404).json({
