@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { consultarApiId } from "../services/fetchApi";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
@@ -11,6 +11,7 @@ export const InfoPersonaje = () => {
     const [personajeId, setPersonajeId] = useState(null);
     const { handleAgregarFavorito, personajeIsFavorito } = useProductos();
     const { id } = useParams();
+    const navigate = useNavigate()
 
     useEffect(() => {
         const obtenerPersonajeId = async () => {
@@ -19,12 +20,13 @@ export const InfoPersonaje = () => {
                 setPersonajeId(data)
             } catch (error) {
                 console.error("Error al obtener el personaje: ", error);
+                navigate('*')
                 throw error;
             }
         }
 
         obtenerPersonajeId();
-    }, [id]);
+    }, [id, navigate]);
 
     if (!personajeId) return (
         <div className="text-center font-bold text-2xl mt-28">Loading...</div>
